@@ -110,7 +110,7 @@ def data_my_collect(collect_id,collect_type):
 
     return result
 
-def event_search_keyword(keyword,from_time,to_time,key_geo,page_size,page_number,sort_field,sort_order):
+def event_search_keyword(keyword,from_time,to_time,page_size,page_number,sort_field,sort_order):
     
     if keyword:
         query_body = {
@@ -158,13 +158,7 @@ def event_search_keyword(keyword,from_time,to_time,key_geo,page_size,page_number
                 }
             }
         query_body["query"]["filtered"]["filter"]["bool"]["must"].append(es_time)
-    if key_geo:
-        es_geo = {
-            "wildcard": {
-                "geo": "*" + key_geo + "*"
-            }
-        }
-        query_body["query"]["filtered"]["filter"]["bool"]["must"].append(es_geo)
+
     if page_number:
         start_from = (int(page_number) - 1) * int(page_size)
         page_print ={
@@ -188,7 +182,7 @@ def event_search_keyword(keyword,from_time,to_time,key_geo,page_size,page_number
 
     return final_result
 
-def event_search_category(tags_string,from_time,to_time,key_geo,page_size,page_number,sort_field,sort_order): 
+def event_search_category(tags_string,from_time,to_time,page_size,page_number,sort_field,sort_order): 
     
     if tags_string:
         query_body = {
@@ -228,13 +222,7 @@ def event_search_category(tags_string,from_time,to_time,key_geo,page_size,page_n
                 }
             }
         query_body["query"]["filtered"]["filter"]["bool"]["must"].append(es_time)
-    if key_geo:
-        es_geo = {
-            "wildcard": {
-                "geo": "*" + key_geo + "*"
-            }
-        }
-        query_body["query"]["filtered"]["filter"]["bool"]["must"].append(es_geo)
+
     if page_number:
         start_from = (int(page_number) - 1) * int(page_size)
         page_print ={
@@ -283,10 +271,7 @@ def event_search():
         to_time = term['to_time'] #int 类型
     else:
         to_time = time.time() #时间戳形式
-    if term.has_key("key_geo"): #地域
-        key_geo = term['key_geo'] 
-    else:
-        key_geo = '' 
+ 
     if term.has_key('page_size'):
         page_size = term['page_size']
     else:
@@ -298,7 +283,7 @@ def event_search():
     if term.has_key("sort_field"):
         sort_field = term["sort_field"]
     else:
-        sort_field = "safety_index"
+        sort_field = "timestamp"
     if term.has_key("sort_order"):
         sort_order = term["sort_order"]
     else:
